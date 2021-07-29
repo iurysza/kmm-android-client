@@ -6,7 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import com.github.iurysza.vaccinationtracker.VaccinationTracker
 import com.github.iurysza.vaccinationtracker.cache.DatabaseDriverFactory
-import com.github.iurysza.vactrackerapp.ui.CardsScreen
+import com.github.iurysza.vactrackerapp.ui.home.HomeScreen
+import com.github.iurysza.vactrackerapp.ui.home.HomeViewModel
 import com.github.iurysza.vactrackerapp.ui.theme.AndroidClientTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -20,7 +21,7 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     setContent {
       AndroidClientTheme {
-        CardsScreen(CardsViewModel(this, sdk))
+        HomeScreen(HomeViewModel(this, sdk))
       }
     }
   }

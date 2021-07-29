@@ -1,4 +1,4 @@
-package com.github.iurysza.vactrackerapp.ui
+package com.github.iurysza.vactrackerapp.ui.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,7 +7,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.iurysza.vactrackerapp.CardsViewModel
 import com.github.iurysza.vactrackerapp.ui.components.ExpandableCard
 import com.github.iurysza.vactrackerapp.ui.components.FakeModels
 import com.github.iurysza.vactrackerapp.ui.theme.AndroidClientTheme
@@ -16,7 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
 @Composable
-fun CardsScreen(viewModel: CardsViewModel) {
+fun HomeScreen(viewModel: HomeViewModel) {
   val cards = viewModel.cards.collectAsState()
   val expandedCardIds = viewModel.expandedCardIdsList.collectAsState()
 

@@ -1,8 +1,8 @@
 package com.github.iurysza.vactrackerapp.ui.components
 
-import com.github.iurysza.vactrackerapp.DataPoint
+import com.github.iurysza.vactrackerapp.ui.home.DataPoint
 import com.github.iurysza.vactrackerapp.R
-import com.github.iurysza.vactrackerapp.StateVaccinationCardModel
+import com.github.iurysza.vactrackerapp.ui.home.StateVaccinationCardModel
 import java.util.UUID
 import kotlin.random.Random
 

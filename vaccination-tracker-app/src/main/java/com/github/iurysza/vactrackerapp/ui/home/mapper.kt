@@ -1,4 +1,4 @@
-package com.github.iurysza.vactrackerapp
+package com.github.iurysza.vactrackerapp.ui.home
 
 import android.content.Context
 import android.icu.text.NumberFormat

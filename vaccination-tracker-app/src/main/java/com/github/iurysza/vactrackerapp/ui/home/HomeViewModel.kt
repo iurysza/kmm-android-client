@@ -1,20 +1,15 @@
-package com.github.iurysza.vactrackerapp
+package com.github.iurysza.vactrackerapp.ui.home
 
 import android.content.Context
-import android.icu.text.NumberFormat
 import android.util.Log
-import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.iurysza.vaccinationtracker.VaccinationTracker
-import com.github.iurysza.vaccinationtracker.cache.CovidVaccinationData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.util.UUID
-import kotlin.random.Random
 
-class CardsViewModel(context: Context, private val sdk: VaccinationTracker) : ViewModel() {
+class HomeViewModel(context: Context, private val sdk: VaccinationTracker) : ViewModel() {
 
   val cards = MutableStateFlow(listOf<StateVaccinationCardModel>())
   val expandedCardIdsList = MutableStateFlow(listOf<String>())
