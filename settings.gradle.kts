@@ -4,8 +4,7 @@ dependencyResolutionManagement {
     google()
     mavenCentral()
     mavenLocal()
-    jcenter() // Warning: this repository is going to shut down soon
   }
 }
-rootProject.name = "AndroidClient"
-include(":app")
+rootProject.name = "vaccination-tracker-android-client"
+include(":vaccination-tracker-app")
