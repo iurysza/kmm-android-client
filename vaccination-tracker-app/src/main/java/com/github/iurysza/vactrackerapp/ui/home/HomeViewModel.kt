@@ -9,23 +9,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(context: Context, private val sdk: VaccinationTracker) : ViewModel() {
+class HomeViewModel(private val context: Context, private val sdk: VaccinationTracker) :
+  ViewModel() {
 
-  val cards = MutableStateFlow(listOf<StateVaccinationCardModel>())
+  val stateFlow = MutableStateFlow<State>(State.Loading)
   val expandedCardIdsList = MutableStateFlow(listOf<String>())
 
   init {
-    getVaccinationData(context)
+    getVaccinationData()
   }
 
-  private fun getVaccinationData(context: Context, forceReload: Boolean = false) {
+  fun getVaccinationData(forceReload: Boolean = false) {
     viewModelScope.launch(Dispatchers.Default) {
-      val vaccinationData = sdk
-        .getVaccinationData(latest = forceReload)
-        .mapToUiModel(context, getDrawableByName)
+      stateFlow.emit(State.Loading)
 
-      Log.e("TAG", "getVaccinationData: $vaccinationData")
-      cards.emit(vaccinationData)
+      runCatching {
+        sdk.getVaccinationData(latest = forceReload)
+          .mapToUiModel(context, getDrawableByName)
+      }.onSuccess {
+        Log.d("TAG", "getVaccinationData: $it")
+        stateFlow.emit(State.Success(it))
+      }.onFailure {
+        Log.e("TAG", "getVaccinationData: $it")
+        stateFlow.emit(State.Error)
+      }
     }
   }
 
@@ -48,3 +55,8 @@ class HomeViewModel(context: Context, private val sdk: VaccinationTracker) : Vie
   }
 }
 
+sealed class State {
+  data class Success(val vaccinationDataList: List<StateVaccinationCardModel>) : State()
+  object Loading : State()
+  object Error : State()
+}

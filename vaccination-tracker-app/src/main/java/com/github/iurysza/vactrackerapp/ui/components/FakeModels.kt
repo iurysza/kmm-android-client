@@ -2,46 +2,51 @@ package com.github.iurysza.vactrackerapp.ui.components
 
 import com.github.iurysza.vactrackerapp.ui.home.DataPoint
 import com.github.iurysza.vactrackerapp.R
+import com.github.iurysza.vactrackerapp.ui.home.State
 import com.github.iurysza.vactrackerapp.ui.home.StateVaccinationCardModel
 import java.util.UUID
 import kotlin.random.Random
 
 object FakeModels {
 
-  fun vaccinationCardModelList(): List<StateVaccinationCardModel> {
-    return (0..20).map {
-      StateVaccinationCardModel(
-        icon = R.drawable.ic_flag_rj,
-        name = randomString(10),
-        coverage = .2f,
-        dataList = listOf(
-          DataPoint(
-            Random.nextInt(100).toString(),
-            "1st Dose"
-          ),
-          DataPoint(
-            Random.nextInt(100).toString(),
-            "1st Dose %"
-          ),
-          DataPoint(
-            Random.nextInt(100).toString(),
-            "2nd Dose"
-          ),
-          DataPoint(
-            Random.nextInt(100).toString(),
-            "2nd Dose %"
-          ),
-          DataPoint(
-            Random.nextInt(100).toString(),
-            "Fully Vaccinated"
-          ),
-          DataPoint(
-            Random.nextInt(100).toString(),
-            "Fully Vaccinated %"
-          ),
-        )
+  fun vaccinationCardModelList(state: State): State {
+    return when (state) {
+      State.Error -> State.Error
+      State.Loading -> State.Loading
+      is State.Success -> State.Success((0..20).map {
+        StateVaccinationCardModel(
+          icon = R.drawable.ic_flag_rj,
+          name = randomString(10),
+          coverage = .2f,
+          dataList = listOf(
+            DataPoint(
+              Random.nextInt(100).toString(),
+              "1st Dose"
+            ),
+            DataPoint(
+              Random.nextInt(100).toString(),
+              "1st Dose %"
+            ),
+            DataPoint(
+              Random.nextInt(100).toString(),
+              "2nd Dose"
+            ),
+            DataPoint(
+              Random.nextInt(100).toString(),
+              "2nd Dose %"
+            ),
+            DataPoint(
+              Random.nextInt(100).toString(),
+              "Fully Vaccinated"
+            ),
+            DataPoint(
+              Random.nextInt(100).toString(),
+              "Fully Vaccinated %"
+            ),
+          )
 
-      )
+        )
+      })
     }
   }
 
