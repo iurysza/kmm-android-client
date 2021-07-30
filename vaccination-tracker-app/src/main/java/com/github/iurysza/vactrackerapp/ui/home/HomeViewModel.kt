@@ -4,9 +4,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 interface HomeViewModel {
 
-  val stateFlow: MutableStateFlow<HomeState>
+  val state: MutableStateFlow<HomeScreenState>
   val expandedCardIdsList: MutableStateFlow<List<String>>
+  val average14daysToggle: MutableStateFlow<Boolean>
+  val sortedByValue: MutableStateFlow<Boolean>
+  val totalToggle: MutableStateFlow<Boolean>
+  val isSortEnabled: MutableStateFlow<Boolean>
+  val dailyToggle: MutableStateFlow<Boolean>
 
-  fun getVaccinationData(forceReload: Boolean = false)
-  fun onCardArrowClicked(name: String)
+  fun get14DaysAverageVaccinationData()
+  fun getDailyVaccinationData()
+  fun getTotalVaccinationData(forceReload: Boolean = false)
+
+  fun onToggleExpand(itemId: String)
+  fun refresh()
+  fun toggleSort()
 }

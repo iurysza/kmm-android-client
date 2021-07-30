@@ -44,24 +44,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.iurysza.vactrackerapp.R
-import com.github.iurysza.vactrackerapp.ui.home.AppIconButton
 import com.github.iurysza.vactrackerapp.ui.home.StateVaccinationCardModel
 import com.github.iurysza.vactrackerapp.ui.theme.ColorHeader
-import com.github.iurysza.vactrackerapp.ui.theme.ColorProgress
 import com.github.iurysza.vactrackerapp.ui.theme.ColorPrimary
+import com.github.iurysza.vactrackerapp.ui.theme.ColorProgress
+import com.github.iurysza.vactrackerapp.ui.theme.EXPAND_ANIMATION_DURATION
 import com.github.iurysza.vactrackerapp.ui.theme.cardCollapsedBackgroundColor
 import com.github.iurysza.vactrackerapp.ui.theme.cardExpandedBackgroundColor
-
-const val EXPAND_ANIMATION_DURATION = 450
-const val COLLAPSE_ANIMATION_DURATION = 300
-const val FADE_IN_ANIMATION_DURATION = 350
-const val FADE_OUT_ANIMATION_DURATION = 300
 
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun ExpandableCard(
-  card: StateVaccinationCardModel,
+  model: StateVaccinationCardModel,
   onCardArrowClick: () -> Unit,
   expanded: Boolean,
 ) {
@@ -84,7 +79,7 @@ fun ExpandableCard(
   val cardElevation by transition.animateDp({
     tween(durationMillis = EXPAND_ANIMATION_DURATION)
   }, label = "elevationTransition") {
-    if (!expanded) 4.dp else 16.dp
+    if (expanded) 16.dp else 2.dp
   }
   val cardRoundedCorners by transition.animateDp({
     tween(
@@ -113,9 +108,8 @@ fun ExpandableCard(
         vertical = cardPaddingHorizontal
       )
   ) {
-
     LinearProgressIndicator(
-      progress = card.coverage,
+      progress = model.coverage,
       modifier = Modifier
         .fillMaxWidth()
         .height(54.dp),
@@ -124,36 +118,34 @@ fun ExpandableCard(
     )
     Column {
       Row(
-        modifier = Modifier
-          .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
       ) {
-        Box(modifier = Modifier.clip(RoundedCornerShape(200.dp))) {
-          FlagIcon(card)
-        }
-
-        CardTitle(title = card.name)
+        FlagIcon(model.icon, model.name)
+        CardTitle(title = model.name)
         CardArrow(
           degrees = arrowRotationDegree,
           onClick = onCardArrowClick
         )
       }
-      ExpandableContent(visible = expanded, card)
+      ExpandableContent(visible = expanded, model)
     }
   }
 }
 
 @Composable
-private fun FlagIcon(card: StateVaccinationCardModel) {
-  Image(
-    contentScale = ContentScale.Crop,
-    modifier = Modifier
-      .size(48.dp)
-      .clip(RoundedCornerShape(48.dp)),
-    painter = painterResource(id = card.icon),
-    contentDescription = card.name
-  )
+private fun FlagIcon(iconId: Int, description: String = "") {
+  Box(modifier = Modifier.clip(RoundedCornerShape(200.dp))) {
+    Image(
+      contentScale = ContentScale.Crop,
+      modifier = Modifier
+        .size(48.dp)
+        .clip(RoundedCornerShape(48.dp)),
+      painter = painterResource(id = iconId),
+      contentDescription = description
+    )
+  }
 }
 
 @Composable
@@ -195,7 +187,7 @@ fun CardTitle(title: String) {
 @Composable
 fun PreviewCollapsedContent() {
   ExpandableCard(
-    card = FakeModels.model(),
+    model = FakeModels.model(),
     expanded = false,
     onCardArrowClick = {}
   )
@@ -205,7 +197,7 @@ fun PreviewCollapsedContent() {
 @Composable
 fun PreviewExpandedContent() {
   ExpandableCard(
-    card = FakeModels.model(),
+    model = FakeModels.model(),
     expanded = true,
     onCardArrowClick = {}
   )

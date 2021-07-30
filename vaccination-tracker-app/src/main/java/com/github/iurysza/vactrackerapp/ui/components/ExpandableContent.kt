@@ -24,13 +24,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.iurysza.vactrackerapp.ui.home.DataPoint
 import com.github.iurysza.vactrackerapp.ui.home.StateVaccinationCardModel
+import com.github.iurysza.vactrackerapp.ui.theme.COLLAPSE_ANIMATION_DURATION
+import com.github.iurysza.vactrackerapp.ui.theme.EXPAND_ANIMATION_DURATION
+import com.github.iurysza.vactrackerapp.ui.theme.FADE_IN_ANIMATION_DURATION
+import com.github.iurysza.vactrackerapp.ui.theme.FADE_OUT_ANIMATION_DURATION
 
 @ExperimentalFoundationApi
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ExpandableContent(
-  visible: Boolean = true,
-  card: StateVaccinationCardModel,
+  visible: Boolean,
+  model: StateVaccinationCardModel,
 ) {
   val (enterFadeIn, enterExpand) = enterAnimation()
   val (exitFadeOut, exitCollapse) = exitAnimation()
@@ -47,14 +51,14 @@ fun ExpandableContent(
         .padding(8.dp),
       cells = GridCells.Fixed(2)
     ) {
-      items(count = card.dataList.size) { index ->
-        val data: DataPoint = card.dataList[index]
+      items(count = model.dataList.size) { index ->
+        val data: DataPoint = model.dataList[index]
 
         DataPointCard(
           value = if (data.value.contains(".")) {
             data.value
           } else {
-            data.value.format()
+            runCatching { data.value.format() }.getOrElse { data.value }
           },
           label = data.label
         )
@@ -65,7 +69,7 @@ fun ExpandableContent(
 
 @ExperimentalAnimationApi
 @Composable
-private fun exitAnimation(): Pair<ExitTransition, ExitTransition> {
+fun exitAnimation(): Pair<ExitTransition, ExitTransition> {
   val exitFadeOut = remember {
     fadeOut(
       animationSpec = TweenSpec(
@@ -103,6 +107,6 @@ private fun enterAnimation(): Pair<EnterTransition, EnterTransition> {
 fun CardPrev() {
   ExpandableContent(
     visible = true,
-    card = FakeModels.model()
+    model = FakeModels.model()
   )
 }
