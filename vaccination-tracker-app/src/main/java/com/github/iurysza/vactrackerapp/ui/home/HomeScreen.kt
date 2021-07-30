@@ -22,16 +22,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.github.iurysza.vactrackerapp.R
 import com.github.iurysza.vactrackerapp.ui.components.ExpandableCard
 import com.github.iurysza.vactrackerapp.ui.components.FakeModels
-import com.github.iurysza.vactrackerapp.ui.theme.AndroidClientTheme
-import com.github.iurysza.vactrackerapp.ui.theme.ColorPrimary
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
-  val screenState = viewModel.stateFlow.collectAsState().value
-  val expandedCardIds = viewModel.expandedCardIdsList.collectAsState().value
+fun HomeScreen(
+  viewModel: HomeViewModel,
+  state: HomeState? = null,
+  selectedId: List<String>? = null,
+) {
+  val screenState = state ?: viewModel.stateFlow.collectAsState().value
+  val expandedCardIds = selectedId ?: viewModel.expandedCardIdsList.collectAsState().value
 
   Scaffold(
     topBar = {
@@ -45,32 +47,29 @@ fun HomeScreen(viewModel: HomeViewModel) {
           )
         },
         actions = {
-          IconButton(
-            onClick = { viewModel.getVaccinationData(true) },
-            content = {
-              Icon(
-                painter = painterResource(id = R.drawable.ic_refresh),
-                contentDescription = "Atualizar",
-              )
-            },
+          AppIconButton(
+            iconId = R.drawable.ic_refresh,
+            onClick = { viewModel.getVaccinationData(true) }
           )
         }
       )
     }) {
     when (screenState) {
-      State.Error -> Text("Error")
-      State.Loading -> {
+      HomeState.Error -> {
         Box(
           modifier = Modifier.fillMaxSize(),
           contentAlignment = Alignment.Center
         ) {
-          CircularProgressIndicator()
+          Text("Algo de Errado Aconteceu")
         }
       }
-      is State.Success -> {
+      HomeState.Loading -> {
+        FullScreenProgress()
+      }
+      is HomeState.Success -> {
         LazyColumn {
           itemsIndexed(
-            screenState.vaccinationDataList
+            screenState.modelList
           ) { _, card ->
             ExpandableCard(
               card = card,
@@ -84,51 +83,42 @@ fun HomeScreen(viewModel: HomeViewModel) {
   }
 }
 
+@Composable
+fun AppIconButton(
+  onClick: () -> Unit,
+  iconId: Int,
+  description: String = ""
+) = IconButton(
+  onClick = onClick,
+  content = {
+    Icon(
+      painter = painterResource(id = iconId),
+      contentDescription = description,
+    )
+  },
+)
+
+@Composable
+private fun FullScreenProgress() {
+  Box(
+    modifier = Modifier.fillMaxSize(),
+    contentAlignment = Alignment.Center
+  ) {
+    CircularProgressIndicator()
+  }
+}
+
+@ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @Preview
 @Composable
 fun PreviewCardScreen() {
-  val screenState = FakeModels.vaccinationCardModelList(State.Loading)
+  val state = FakeModels.vaccinationCardModelList(HomeState.Success(emptyList()))
+  val selectedIds = (state as? HomeState.Success)?.modelList?.take(1)?.map { it.name }
 
-  AndroidClientTheme {
-    Scaffold(
-      topBar = {
-        TopAppBar(
-          navigationIcon = {},
-          title = {
-            Text(
-              text = "Vacinação COVID 19 ",
-              textAlign = TextAlign.Center,
-              modifier = Modifier.fillMaxWidth()
-            )
-          },
-          actions = {
-            Text(text = "Refresh", color = ColorPrimary)
-          }
-        )
-      }) {
-      when (screenState) {
-        State.Error -> Text("Error")
-        State.Loading ->
-          Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-          ) {
-            CircularProgressIndicator()
-          }
-        is State.Success ->
-          LazyColumn {
-            itemsIndexed(
-              screenState.vaccinationDataList
-            ) { index, card ->
-              ExpandableCard(
-                card = card,
-                onCardArrowClick = {},
-                expanded = index == 0,
-              )
-            }
-          }
-      }
-    }
-  }
+  HomeScreen(
+    viewModel = FakeHomeModel(),
+    state = state,
+    selectedId = selectedIds
+  )
 }

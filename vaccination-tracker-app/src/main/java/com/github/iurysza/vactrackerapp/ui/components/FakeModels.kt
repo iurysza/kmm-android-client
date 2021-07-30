@@ -2,18 +2,18 @@ package com.github.iurysza.vactrackerapp.ui.components
 
 import com.github.iurysza.vactrackerapp.ui.home.DataPoint
 import com.github.iurysza.vactrackerapp.R
-import com.github.iurysza.vactrackerapp.ui.home.State
+import com.github.iurysza.vactrackerapp.ui.home.HomeState
 import com.github.iurysza.vactrackerapp.ui.home.StateVaccinationCardModel
 import java.util.UUID
 import kotlin.random.Random
 
 object FakeModels {
 
-  fun vaccinationCardModelList(state: State): State {
+  fun vaccinationCardModelList(state: HomeState): HomeState {
     return when (state) {
-      State.Error -> State.Error
-      State.Loading -> State.Loading
-      is State.Success -> State.Success((0..20).map {
+      HomeState.Error -> HomeState.Error
+      HomeState.Loading -> HomeState.Loading
+      is HomeState.Success -> HomeState.Success((0..20).map {
         StateVaccinationCardModel(
           icon = R.drawable.ic_flag_rj,
           name = randomString(10),
