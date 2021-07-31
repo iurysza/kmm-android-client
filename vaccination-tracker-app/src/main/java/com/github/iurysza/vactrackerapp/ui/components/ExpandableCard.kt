@@ -61,6 +61,7 @@ fun ExpandableCard(
   model: StateVaccinationCardModel,
   onCardArrowClick: () -> Unit,
   expanded: Boolean,
+  onItemClicked: (StateVaccinationCardModel) -> Unit,
 ) {
   val transitionState = remember {
     MutableTransitionState(expanded).apply {
@@ -104,7 +105,7 @@ fun ExpandableCard(
     shape = RoundedCornerShape(cardRoundedCorners),
     modifier = Modifier
       .fillMaxWidth()
-      .noRippleClickable{
+      .noRippleClickable {
         onCardArrowClick()
       }
       .padding(
@@ -112,14 +113,7 @@ fun ExpandableCard(
         vertical = cardPaddingHorizontal
       )
   ) {
-    LinearProgressIndicator(
-      progress = model.coverage,
-      modifier = Modifier
-        .fillMaxWidth()
-        .height(54.dp),
-      backgroundColor = ColorCardCollapsedBackground,
-      color = ColorProgress,
-    )
+    HeaderProgress(model.coverage)
     Column {
       Row(
         modifier = Modifier.fillMaxWidth(),
@@ -127,15 +121,31 @@ fun ExpandableCard(
         horizontalArrangement = Arrangement.SpaceBetween
       ) {
         FlagIcon(model.icon, model.name)
-        CardTitle(title = model.name)
+        CardTitle(model.name)
         CardArrow(
           degrees = arrowRotationDegree,
           onClick = onCardArrowClick
         )
       }
-      ExpandableContent(visible = expanded, model)
+      ContentGrid(
+        visible = expanded,
+        dataList = model.dataList,
+        onListClicked = { onItemClicked(model) }
+      )
     }
   }
+}
+
+@Composable
+private fun HeaderProgress(progressValue: Float) {
+  LinearProgressIndicator(
+    progress = progressValue,
+    modifier = Modifier
+      .fillMaxWidth()
+      .height(54.dp),
+    backgroundColor = ColorCardCollapsedBackground,
+    color = ColorProgress,
+  )
 }
 
 @Composable
@@ -192,9 +202,11 @@ fun CardTitle(title: String) {
 fun PreviewCollapsedContent() {
   ExpandableCard(
     model = FakeModels.model(),
-    expanded = false,
-    onCardArrowClick = {}
-  )
+    onCardArrowClick = {},
+    expanded = false
+  ) {
+
+  }
 }
 
 @Preview
@@ -202,16 +214,17 @@ fun PreviewCollapsedContent() {
 fun PreviewExpandedContent() {
   ExpandableCard(
     model = FakeModels.model(),
-    expanded = true,
-    onCardArrowClick = {}
-  )
-}
+    onCardArrowClick = {},
+    expanded = true
+  ) {
 
+  }
+}
 
 inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
   clickable(indication = null,
- interactionSource = remember {
-   MutableInteractionSource()
- }
-    ) { onClick() }
+    interactionSource = remember {
+      MutableInteractionSource()
+    }
+  ) { onClick() }
 }

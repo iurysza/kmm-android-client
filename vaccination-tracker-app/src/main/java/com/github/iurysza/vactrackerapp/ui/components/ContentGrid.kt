@@ -13,6 +13,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
@@ -23,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.iurysza.vactrackerapp.ui.home.DataPoint
-import com.github.iurysza.vactrackerapp.ui.home.StateVaccinationCardModel
 import com.github.iurysza.vactrackerapp.ui.theme.COLLAPSE_ANIMATION_DURATION
 import com.github.iurysza.vactrackerapp.ui.theme.EXPAND_ANIMATION_DURATION
 import com.github.iurysza.vactrackerapp.ui.theme.FADE_IN_ANIMATION_DURATION
@@ -32,9 +32,10 @@ import com.github.iurysza.vactrackerapp.ui.theme.FADE_OUT_ANIMATION_DURATION
 @ExperimentalFoundationApi
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ExpandableContent(
+fun ContentGrid(
   visible: Boolean,
-  model: StateVaccinationCardModel,
+  dataList: List<DataPoint>,
+  onListClicked: () -> Unit,
 ) {
   val (enterFadeIn, enterExpand) = enterAnimation()
   val (exitFadeOut, exitCollapse) = exitAnimation()
@@ -48,11 +49,12 @@ fun ExpandableContent(
     LazyVerticalGrid(
       modifier = Modifier
         .height(300.dp)
+        .clickable(onClick = onListClicked)
         .padding(8.dp),
       cells = GridCells.Fixed(2)
     ) {
-      items(count = model.dataList.size) { index ->
-        val data: DataPoint = model.dataList[index]
+      items(count = dataList.size) { index ->
+        val data: DataPoint = dataList[index]
 
         DataPointCard(
           value = if (data.value.contains(".")) {
@@ -105,8 +107,8 @@ private fun enterAnimation(): Pair<EnterTransition, EnterTransition> {
 @Composable
 @Preview
 fun CardPrev() {
-  ExpandableContent(
+  ContentGrid(
     visible = true,
-    model = FakeModels.model()
-  )
+    dataList = FakeModels.model().dataList
+  ) { }
 }

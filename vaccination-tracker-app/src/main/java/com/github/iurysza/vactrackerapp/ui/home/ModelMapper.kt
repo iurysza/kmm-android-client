@@ -32,7 +32,7 @@ fun List<VaccinationDataResponseItem>.fromAverage14DaysToUiModel(
       ),
       DataPoint(
         average14days.perMillion.toLong().formatNumber(),
-        "Por milhão"
+        "Doses/milhão"
       ),
       DataPoint(
         average14days.total.toLong().formatNumber(),
@@ -134,4 +134,12 @@ data class StateVaccinationCardModel(
 data class DataPoint(
   val value: String,
   val label: String,
+)
+
+data class BottomSheetModel(
+  val name: String,
+  val peopleFullyVaccinatedPerHundred: Int,
+  val peopleVaccinatedPerHundred: Int,
+  val sourceName: String,
+  val sourceWebsite: String,
 )
