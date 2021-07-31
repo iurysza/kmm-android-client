@@ -55,8 +55,7 @@ class AppHomeViewModel(
       dailyToggle.emit(false)
 
       runCatching {
-        getFullVaccinationFromCache()
-        fullVaccinationDataCache!!.fromAverage14DaysToUiModel(context, getDrawableByName)
+        getFullVaccinationFromCache().fromAverage14DaysToUiModel(context, getDrawableByName)
       }.onSuccess {
         state.emit(HomeScreenState.Success(it))
       }.onFailure {

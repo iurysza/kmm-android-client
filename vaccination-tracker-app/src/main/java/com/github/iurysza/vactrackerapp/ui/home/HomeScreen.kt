@@ -39,6 +39,9 @@ fun HomeScreen(
   state: HomeScreenState? = null,
   selectedId: List<String>? = null,
 ) {
+  val isSorted = viewModel.sortedByValue.collectAsState().value
+  val hasSortToggle = viewModel.isSortEnabled.collectAsState().value
+
   Scaffold(
     topBar = {
       TopAppBar(
@@ -51,17 +54,18 @@ fun HomeScreen(
           )
         },
         actions = {
-          AppIconButton(
-            iconId = R.drawable.ic_refresh,
-            onClick = { viewModel.refresh() }
-          )
+          if (hasSortToggle) {
+            AppIconButton(
+              iconId = if (!isSorted) R.drawable.ic_sort else R.drawable.ic_sort_by_alpha,
+              onClick = { viewModel.toggleSort() }
+            )
+          }
         })
     }
   ) {
 
     val screenState = state ?: viewModel.state.collectAsState().value
     val expandedCardIds = selectedId ?: viewModel.expandedCardIdsList.collectAsState().value
-    val hasSortToggle = viewModel.isSortEnabled.collectAsState().value
 
     Column {
       HeaderMenu(viewModel)
@@ -75,14 +79,6 @@ fun HomeScreen(
         HomeScreenState.Loading -> FullScreenProgress()
         is HomeScreenState.Success -> {
           LazyColumn {
-            if (hasSortToggle) {
-              item {
-                ToggleButton(
-                  onChecked = { viewModel.toggleSort() },
-                  checked = viewModel.sortedByValue.collectAsState().value,
-                )
-              }
-            }
             itemsIndexed(screenState.modelList) { _, card ->
               ExpandableCard(
                 model = card,
