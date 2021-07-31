@@ -138,8 +138,7 @@ data class DataPoint(
 
 data class BottomSheetModel(
   val name: String,
-  val peopleFullyVaccinatedPerHundred: Int,
-  val peopleVaccinatedPerHundred: Int,
+  val lastUpdate:String,
   val sourceName: String,
   val sourceWebsite: String,
 )

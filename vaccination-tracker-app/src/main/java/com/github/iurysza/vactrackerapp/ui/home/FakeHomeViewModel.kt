@@ -7,10 +7,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class FakeHomeViewModel : HomeViewModel {
+  override fun onDismiss() {
+    TODO("Not yet implemented")
+  }
+
   override val isSortEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true)
   val value = HomeScreenState.Success(emptyList())
-  override val bottomSheetState: MutableStateFlow<StateVaccinationCardModel?>
-    get() = TODO("Not yet implemented")
+  override val bottomSheetState: MutableStateFlow<BottomSheetModel?> = MutableStateFlow(null)
   override val state = MutableStateFlow<HomeScreenState>(value)
 
   override val expandedCardIdsList = MutableStateFlow(listOf<String>())

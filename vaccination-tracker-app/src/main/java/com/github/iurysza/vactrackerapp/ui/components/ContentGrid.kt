@@ -13,7 +13,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
@@ -49,13 +48,11 @@ fun ContentGrid(
     LazyVerticalGrid(
       modifier = Modifier
         .height(300.dp)
-        .clickable(onClick = onListClicked)
         .padding(8.dp),
       cells = GridCells.Fixed(2)
     ) {
       items(count = dataList.size) { index ->
         val data: DataPoint = dataList[index]
-
         DataPointCard(
           value = if (data.value.contains(".")) {
             data.value
@@ -63,7 +60,7 @@ fun ContentGrid(
             runCatching { data.value.format() }.getOrElse { data.value }
           },
           label = data.label
-        )
+        ) { onListClicked() }
       }
     }
   }

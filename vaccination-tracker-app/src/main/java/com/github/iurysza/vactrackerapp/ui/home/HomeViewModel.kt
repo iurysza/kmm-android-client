@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 interface HomeViewModel {
 
-  val bottomSheetState: MutableStateFlow<StateVaccinationCardModel?>
+  val bottomSheetState: MutableStateFlow<BottomSheetModel?>
   val state: MutableStateFlow<HomeScreenState>
   val expandedCardIdsList: MutableStateFlow<List<String>>
   val average14daysToggle: MutableStateFlow<Boolean>
@@ -19,6 +19,7 @@ interface HomeViewModel {
 
   fun onToggleExpand(itemId: String)
   fun refresh()
+  fun onDismiss()
   fun toggleSort()
   fun onItemClicked(stateVaccinationCardModel: StateVaccinationCardModel)
 }

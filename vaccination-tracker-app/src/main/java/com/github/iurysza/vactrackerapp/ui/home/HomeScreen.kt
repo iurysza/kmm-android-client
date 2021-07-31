@@ -1,5 +1,6 @@
 package com.github.iurysza.vactrackerapp.ui.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -20,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,71 +32,79 @@ import androidx.compose.ui.unit.dp
 import com.github.iurysza.vactrackerapp.R
 import com.github.iurysza.vactrackerapp.ui.components.ExpandableCard
 import com.github.iurysza.vactrackerapp.ui.components.FakeModels
+import com.github.iurysza.vactrackerapp.ui.components.ModelBottomSheet
 import com.github.iurysza.vactrackerapp.ui.components.ToggleButton
 import com.github.iurysza.vactrackerapp.ui.theme.ColorPrimary
 import com.github.iurysza.vactrackerapp.ui.theme.cardExpandedBackgroundColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@ExperimentalFoundationApi
+@ExperimentalComposeUiApi
+@ExperimentalMaterialApi
 @Composable
 fun HomeScreen(
   viewModel: HomeViewModel,
   state: HomeScreenState? = null,
   selectedId: List<String>? = null,
+  expandedSheet: BottomSheetModel? = null,
 ) {
+
   val isSorted = viewModel.sortedByValue.collectAsState().value
   val hasSortToggle = viewModel.isSortEnabled.collectAsState().value
   val systemUiController = rememberSystemUiController()
+  val bottomSheetValue = expandedSheet ?: viewModel.bottomSheetState.collectAsState().value
 
   SideEffect {
-    systemUiController.setSystemBarsColor(
-      color = ColorPrimary,
-      darkIcons = false
-    )
+    systemUiController.setSystemBarsColor(color = ColorPrimary, darkIcons = false)
     systemUiController.setNavigationBarColor(Color.Transparent)
   }
-  Scaffold(
-    topBar = {
-      TopAppBar(
-        navigationIcon = {},
-        title = {
-          Text(
-            text = "Vacinação COVID 19",
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-          )
-        },
-        actions = {
-          SortToggle(
-            hasSortToggle = hasSortToggle,
-            isSorted = isSorted,
-            onClick = { viewModel.toggleSort() }
-          )
-        })
-    }
-  ) {
 
-    val screenState = state ?: viewModel.state.collectAsState().value
-    val expandedItemIdList = selectedId ?: viewModel.expandedCardIdsList.collectAsState().value
+  ModelBottomSheet(bottomSheetValue) {
+    Scaffold(
+      topBar = {
+        TopAppBar(
+          navigationIcon = {},
+          title = {
+            Text(
+              text = "Vacinação COVID 19",
+              textAlign = TextAlign.Center,
+              modifier = Modifier.fillMaxWidth()
+            )
+          },
+          actions = {
+            SortToggle(
+              hasSortToggle = hasSortToggle,
+              isSorted = isSorted,
+              onClick = { viewModel.toggleSort() }
+            )
+          })
+      },
+    ) {
+      val screenState = state ?: viewModel.state.collectAsState().value
+      val expandedItemIdList = selectedId ?: viewModel.expandedCardIdsList.collectAsState().value
 
-    Column {
-      HeaderMenu(viewModel)
-      when (screenState) {
-        HomeScreenState.Error -> Box(
-          modifier = Modifier.fillMaxSize(),
-          contentAlignment = Alignment.Center
-        ) {
-          Text("Algo de errado aconteceu")
-        }
-        HomeScreenState.Loading -> FullScreenProgress()
-        is HomeScreenState.Success -> {
-          LazyColumn {
-            itemsIndexed(screenState.modelList) { _, model ->
-              ExpandableCard(
-                model = model,
-                expanded = expandedItemIdList.contains(model.name),
-                onCardArrowClick = { viewModel.onToggleExpand(model.name) },
-                onItemClicked = { viewModel.onItemClicked(it) },
-              )
+      Column {
+        HeaderMenu(viewModel)
+        when (screenState) {
+          HomeScreenState.Error -> Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+          ) {
+            Text("Algo de errado aconteceu")
+          }
+          HomeScreenState.Loading -> FullScreenProgress()
+          is HomeScreenState.Success -> {
+            LazyColumn {
+              itemsIndexed(screenState.modelList) { _, model ->
+                ExpandableCard(
+                  model = model,
+                  expanded = expandedItemIdList.contains(model.name),
+                  onCardArrowClick = { viewModel.onToggleExpand(model.name) },
+                  onItemClicked = {
+                    viewModel.onItemClicked(it)
+                  },
+                )
+              }
             }
           }
         }
@@ -177,6 +188,9 @@ fun FullScreenProgress() {
   }
 }
 
+@ExperimentalFoundationApi
+@ExperimentalComposeUiApi
+@ExperimentalMaterialApi
 @Preview
 @Composable
 fun PreviewCardScreen() {

@@ -26,13 +26,14 @@ import com.github.iurysza.vactrackerapp.ui.theme.ColorProgress
 @Composable
 fun DataPointCard(
   value: String,
-  label: String
+  label: String,
+  onClick: () -> Unit
 ) {
   Card(
     modifier = Modifier
       .height(94.dp)
       .padding(4.dp)
-      .clickable { },
+      .clickable(onClick = onClick),
     elevation = 0.dp
   ) {
     Column(
@@ -88,6 +89,6 @@ fun DataCardPreview() {
   DataPointCard(
     value = "25.0",
     label = "Label"
-  )
+  ) { }
 }
 

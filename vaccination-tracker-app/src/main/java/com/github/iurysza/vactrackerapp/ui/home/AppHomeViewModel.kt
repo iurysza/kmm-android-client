@@ -17,7 +17,7 @@ class AppHomeViewModel(
   override val state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
   override val expandedCardIdsList = MutableStateFlow(emptyList<String>())
 
-  override val bottomSheetState = MutableStateFlow<StateVaccinationCardModel?>(null)
+  override val bottomSheetState = MutableStateFlow<BottomSheetModel?>(null)
   override val totalToggle = MutableStateFlow(true)
   override val isSortEnabled = MutableStateFlow(false)
   override val dailyToggle = MutableStateFlow(false)
@@ -75,6 +75,7 @@ class AppHomeViewModel(
       isSortEnabled.emit(false)
       average14daysToggle.emit(false)
       totalToggle.emit(false)
+      onDismiss()
 
       runCatching {
         fullVaccinationDataCache.await().fromDailyToUiModel(context, getDrawableByName)
@@ -88,7 +89,17 @@ class AppHomeViewModel(
 
   override fun onItemClicked(stateVaccinationCardModel: StateVaccinationCardModel) {
     viewModelScope.launch {
-      bottomSheetState.emit(stateVaccinationCardModel)
+      val name = stateVaccinationCardModel.name
+      bottomSheetState.emit(
+        fullVaccinationDataCache.await().find { it.state == name }?.let {
+          BottomSheetModel(
+            name = name,
+            sourceName = it.sourceName,
+            sourceWebsite = it.sourceWebsite,
+            lastUpdate = it.lastUpdateDate
+          )
+        }
+      )
     }
   }
 
@@ -122,6 +133,12 @@ class AppHomeViewModel(
       } else {
         list.add(itemId)
       }
+    }
+  }
+
+  override fun onDismiss() {
+    viewModelScope.launch {
+      // bottomSheetState.emit(null)
     }
   }
 }
