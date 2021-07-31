@@ -13,13 +13,9 @@ import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -96,7 +92,9 @@ fun HomeScreen(
                 model = card,
                 onCardArrowClick = { viewModel.onToggleExpand(card.name) },
                 expanded = expandedCardIds.contains(card.name),
-              )
+              ) {
+                viewModel.onItemClicked(it)
+              }
             }
           }
         }
@@ -126,7 +124,9 @@ private fun HeaderMenu(viewModel: HomeViewModel) = Card(
   backgroundColor = cardExpandedBackgroundColor,
   contentColor = ColorPrimary,
   elevation = 0.dp,
-  modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+  modifier = Modifier
+    .fillMaxWidth()
+    .padding(vertical = 8.dp)
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),

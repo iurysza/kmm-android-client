@@ -4,12 +4,10 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.iurysza.vaccinationtracker.VaccinationTracker
-import com.github.iurysza.vaccinationtracker.entity.VaccinationDataResponseItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AppHomeViewModel(
   private val context: Context,
@@ -19,6 +17,7 @@ class AppHomeViewModel(
   override val state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
   override val expandedCardIdsList = MutableStateFlow(emptyList<String>())
 
+  override val bottomSheetState = MutableStateFlow<StateVaccinationCardModel?>(null)
   override val totalToggle = MutableStateFlow(true)
   override val isSortEnabled = MutableStateFlow(false)
   override val dailyToggle = MutableStateFlow(false)
@@ -84,6 +83,12 @@ class AppHomeViewModel(
       }.onFailure {
         state.emit(HomeScreenState.Error)
       }
+    }
+  }
+
+  override fun onItemClicked(stateVaccinationCardModel: StateVaccinationCardModel) {
+    viewModelScope.launch {
+      bottomSheetState.emit(stateVaccinationCardModel)
     }
   }
 

@@ -9,6 +9,8 @@ import kotlinx.coroutines.launch
 class FakeHomeViewModel : HomeViewModel {
   override val isSortEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true)
   val value = HomeScreenState.Success(emptyList())
+  override val bottomSheetState: MutableStateFlow<StateVaccinationCardModel?>
+    get() = TODO("Not yet implemented")
   override val state = MutableStateFlow<HomeScreenState>(value)
 
   override val expandedCardIdsList = MutableStateFlow(listOf<String>())
@@ -26,6 +28,10 @@ class FakeHomeViewModel : HomeViewModel {
   }
 
   override fun toggleSort() {
+    TODO("Not yet implemented")
+  }
+
+  override fun onItemClicked(stateVaccinationCardModel: StateVaccinationCardModel) {
     TODO("Not yet implemented")
   }
 
