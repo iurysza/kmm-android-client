@@ -33,7 +33,7 @@ class AppHomeViewModel(
     viewModelScope.launch(Dispatchers.Default) {
 
       isSortEnabled.emit(true)
-      state.emit(HomeScreenState.Loading)
+      // state.emit(HomeScreenState.Loading)
       totalToggle.emit(true)
       average14daysToggle.emit(false)
       dailyToggle.emit(false)
@@ -48,7 +48,7 @@ class AppHomeViewModel(
 
   override fun get14DaysAverageVaccinationData() {
     viewModelScope.launch(Dispatchers.IO) {
-      state.emit(HomeScreenState.Loading)
+      // state.emit(HomeScreenState.Loading)
       average14daysToggle.emit(true)
       isSortEnabled.emit(false)
       totalToggle.emit(false)
@@ -66,7 +66,7 @@ class AppHomeViewModel(
 
   override fun getDailyVaccinationData() {
     viewModelScope.launch(Dispatchers.IO) {
-      state.emit(HomeScreenState.Loading)
+      // state.emit(HomeScreenState.Loading)
       dailyToggle.emit(true)
       isSortEnabled.emit(false)
       average14daysToggle.emit(false)

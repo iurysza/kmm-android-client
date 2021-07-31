@@ -11,6 +11,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
@@ -49,7 +51,7 @@ import com.github.iurysza.vactrackerapp.ui.theme.ColorHeader
 import com.github.iurysza.vactrackerapp.ui.theme.ColorPrimary
 import com.github.iurysza.vactrackerapp.ui.theme.ColorProgress
 import com.github.iurysza.vactrackerapp.ui.theme.EXPAND_ANIMATION_DURATION
-import com.github.iurysza.vactrackerapp.ui.theme.cardCollapsedBackgroundColor
+import com.github.iurysza.vactrackerapp.ui.theme.ColorCardCollapsedBackground
 import com.github.iurysza.vactrackerapp.ui.theme.cardExpandedBackgroundColor
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -69,7 +71,7 @@ fun ExpandableCard(
   val cardBgColor by transition.animateColor({
     tween(durationMillis = EXPAND_ANIMATION_DURATION)
   }, label = "bgColorTransition") {
-    if (expanded) cardExpandedBackgroundColor else cardCollapsedBackgroundColor
+    if (expanded) cardExpandedBackgroundColor else ColorCardCollapsedBackground
   }
   val cardPaddingHorizontal by transition.animateDp({
     tween(durationMillis = EXPAND_ANIMATION_DURATION)
@@ -102,7 +104,9 @@ fun ExpandableCard(
     shape = RoundedCornerShape(cardRoundedCorners),
     modifier = Modifier
       .fillMaxWidth()
-      .clickable { onCardArrowClick() }
+      .noRippleClickable{
+        onCardArrowClick()
+      }
       .padding(
         horizontal = 24.dp,
         vertical = cardPaddingHorizontal
@@ -113,7 +117,7 @@ fun ExpandableCard(
       modifier = Modifier
         .fillMaxWidth()
         .height(54.dp),
-      backgroundColor = cardCollapsedBackgroundColor,
+      backgroundColor = ColorCardCollapsedBackground,
       color = ColorProgress,
     )
     Column {
@@ -201,4 +205,13 @@ fun PreviewExpandedContent() {
     expanded = true,
     onCardArrowClick = {}
   )
+}
+
+
+inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
+  clickable(indication = null,
+ interactionSource = remember {
+   MutableInteractionSource()
+ }
+    ) { onClick() }
 }

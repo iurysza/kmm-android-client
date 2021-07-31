@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Card
@@ -54,12 +55,11 @@ fun HomeScreen(
           )
         },
         actions = {
-          if (hasSortToggle) {
-            AppIconButton(
-              iconId = if (!isSorted) R.drawable.ic_sort else R.drawable.ic_sort_by_alpha,
-              onClick = { viewModel.toggleSort() }
-            )
-          }
+          SortToggle(
+            hasSortToggle = hasSortToggle,
+            isSorted = isSorted,
+            onClick = { viewModel.toggleSort() }
+          )
         })
     }
   ) {
@@ -94,26 +94,27 @@ fun HomeScreen(
 }
 
 @Composable
-private fun ToggleButton(
-  onChecked: (Boolean) -> Unit,
-  checked: Boolean
-) = Box(
-  modifier = Modifier.fillMaxWidth(),
-  contentAlignment = Alignment.Center
+private fun SortToggle(
+  hasSortToggle: Boolean,
+  isSorted: Boolean,
+  onClick: () -> Unit
 ) {
-  ToggleButton(
-    "Ordenado",
-    icon = Icons.Filled.KeyboardArrowDown,
-    onChecked = onChecked,
-    checked = checked,
-  )
+  if (hasSortToggle) {
+    AppIconButton(
+      iconId = if (!isSorted) R.drawable.ic_sort else R.drawable.ic_sort_by_alpha,
+      onClick = onClick
+    )
+  } else {
+    IconButton(onClick = {}, content = {})
+  }
 }
 
 @Composable
 private fun HeaderMenu(viewModel: HomeViewModel) = Card(
   backgroundColor = cardExpandedBackgroundColor,
   contentColor = ColorPrimary,
-  elevation = 24.dp,
+  elevation = 0.dp,
+  modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),
@@ -121,19 +122,19 @@ private fun HeaderMenu(viewModel: HomeViewModel) = Card(
   ) {
     ToggleButton(
       "Total",
-      Icons.Filled.DateRange,
+      R.drawable.ic_total,
       checked = viewModel.totalToggle.collectAsState().value,
       onChecked = { viewModel.getTotalVaccinationData() }
     )
     ToggleButton(
       "14 dias",
-      Icons.Filled.DateRange,
+      R.drawable.ic_week,
       checked = viewModel.average14daysToggle.collectAsState().value,
       onChecked = { viewModel.get14DaysAverageVaccinationData() }
     )
     ToggleButton(
-      "Diário",
-      Icons.Filled.DateRange,
+      "Hoje",
+      R.drawable.ic_day,
       checked = viewModel.dailyToggle.collectAsState().value,
       onChecked = { viewModel.getDailyVaccinationData() }
     )

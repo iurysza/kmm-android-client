@@ -19,23 +19,23 @@ fun List<VaccinationDataResponseItem>.fromAverage14DaysToUiModel(
     coverage = 0f,
     dataList = listOf(
       DataPoint(
-        average14days.firstDose.toString(),
+        average14days.firstDose.toLong().formatNumber(),
         "1ª dose"
       ),
       DataPoint(
-        average14days.secondDose.toString(),
+        average14days.secondDose.toLong().formatNumber(),
         "2ª dose"
       ),
       DataPoint(
-        average14days.singleDose.toString(),
+        average14days.singleDose.toLong().formatNumber(),
         "Dose única"
       ),
       DataPoint(
-        average14days.perMillion.toString(),
+        average14days.perMillion.toLong().formatNumber(),
         "Por milhão"
       ),
       DataPoint(
-        average14days.total.toString(),
+        average14days.total.toLong().formatNumber(),
         "Total"
       ),
     )
@@ -55,23 +55,23 @@ fun List<VaccinationDataResponseItem>.fromDailyToUiModel(
     coverage = 0f,
     dataList = listOf(
       DataPoint(
-        dailyVaccinations.firstDose.toString(),
+        dailyVaccinations.firstDose?.toLong().formatNumber(),
         "1ª dose"
       ),
       DataPoint(
-        dailyVaccinations.secondDose.toString(),
+        dailyVaccinations.secondDose?.toLong().formatNumber(),
         "2ª dose"
       ),
       DataPoint(
-        dailyVaccinations.singleDose.toString(),
+        dailyVaccinations.singleDose?.toLong().formatNumber(),
         "Dose única"
       ),
       DataPoint(
-        dailyVaccinations.fullyVaccinated.toString(),
+        dailyVaccinations.fullyVaccinated?.toLong().formatNumber(),
         "Imunizados"
       ),
       DataPoint(
-        dailyVaccinations.total.toString(),
+        dailyVaccinations.total?.toLong().formatNumber(),
         "Total"
       ),
     )
@@ -118,7 +118,9 @@ fun List<CovidVaccinationData>.mapToUiModel(
   }
 }
 
-fun Long.formatNumber(): String = NumberFormat.getInstance().format(this)
+fun Long?.formatNumber(): String {
+  return runCatching { NumberFormat.getInstance().format(this) }.getOrDefault("0")
+}
 
 @Immutable
 data class StateVaccinationCardModel(
