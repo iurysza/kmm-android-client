@@ -6,15 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.github.iurysza.vaccinationtracker.VaccinationTracker
 import com.github.iurysza.vaccinationtracker.entity.VaccinationDataResponseItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AppHomeViewModel(
   private val context: Context,
   private val sdk: VaccinationTracker
 ) : HomeViewModel, ViewModel() {
-
-  private var fullVaccinationDataCache: List<VaccinationDataResponseItem>? = null
 
   override val state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
   override val expandedCardIdsList = MutableStateFlow(emptyList<String>())
@@ -25,15 +25,22 @@ class AppHomeViewModel(
   override val sortedByValue = MutableStateFlow(false)
   override val average14daysToggle = MutableStateFlow(false)
 
+  private val fullVaccinationDataCache by lazy {
+    viewModelScope.async {
+      state.emit(HomeScreenState.Loading)
+      sdk.getFullVaccinationData()
+    }
+  }
+
   init {
+    viewModelScope.launch { state.emit(HomeScreenState.Loading) }
     getTotalVaccinationData()
   }
 
   override fun getTotalVaccinationData(forceReload: Boolean) {
-    viewModelScope.launch(Dispatchers.Default) {
+    viewModelScope.launch(Dispatchers.IO) {
 
       isSortEnabled.emit(true)
-      // state.emit(HomeScreenState.Loading)
       totalToggle.emit(true)
       average14daysToggle.emit(false)
       dailyToggle.emit(false)
@@ -48,14 +55,13 @@ class AppHomeViewModel(
 
   override fun get14DaysAverageVaccinationData() {
     viewModelScope.launch(Dispatchers.IO) {
-      // state.emit(HomeScreenState.Loading)
       average14daysToggle.emit(true)
       isSortEnabled.emit(false)
       totalToggle.emit(false)
       dailyToggle.emit(false)
 
       runCatching {
-        getFullVaccinationFromCache().fromAverage14DaysToUiModel(context, getDrawableByName)
+        fullVaccinationDataCache.await().fromAverage14DaysToUiModel(context, getDrawableByName)
       }.onSuccess {
         state.emit(HomeScreenState.Success(it))
       }.onFailure {
@@ -66,14 +72,13 @@ class AppHomeViewModel(
 
   override fun getDailyVaccinationData() {
     viewModelScope.launch(Dispatchers.IO) {
-      // state.emit(HomeScreenState.Loading)
       dailyToggle.emit(true)
       isSortEnabled.emit(false)
       average14daysToggle.emit(false)
       totalToggle.emit(false)
 
       runCatching {
-        getFullVaccinationFromCache().fromDailyToUiModel(context, getDrawableByName)
+        fullVaccinationDataCache.await().fromDailyToUiModel(context, getDrawableByName)
       }.onSuccess {
         state.emit(HomeScreenState.Success(it))
       }.onFailure {
@@ -114,23 +119,14 @@ class AppHomeViewModel(
       }
     }
   }
+}
 
-  private suspend fun getFullVaccinationFromCache(): List<VaccinationDataResponseItem> {
-    fullVaccinationDataCache = if (fullVaccinationDataCache != null) {
-      fullVaccinationDataCache!!
-    } else {
-      sdk.getFullVaccinationData()
-    }
-    return fullVaccinationDataCache!!
-  }
-
-  private val getDrawableByName: (Context, String) -> Int = { context, isoCode ->
-    context.resources.getIdentifier(
-      "ic_flag_$isoCode",
-      "drawable",
-      context.packageName
-    )
-  }
+private val getDrawableByName: (Context, String) -> Int = { context, isoCode ->
+  context.resources.getIdentifier(
+    "ic_flag_$isoCode",
+    "drawable",
+    context.packageName
+  )
 }
 
 sealed class HomeScreenState {
