@@ -73,7 +73,7 @@ fun HomeScreen(
   ) {
 
     val screenState = state ?: viewModel.state.collectAsState().value
-    val expandedCardIds = selectedId ?: viewModel.expandedCardIdsList.collectAsState().value
+    val expandedItemIdList = selectedId ?: viewModel.expandedCardIdsList.collectAsState().value
 
     Column {
       HeaderMenu(viewModel)
@@ -87,14 +87,13 @@ fun HomeScreen(
         HomeScreenState.Loading -> FullScreenProgress()
         is HomeScreenState.Success -> {
           LazyColumn {
-            itemsIndexed(screenState.modelList) { _, card ->
+            itemsIndexed(screenState.modelList) { _, model ->
               ExpandableCard(
-                model = card,
-                onCardArrowClick = { viewModel.onToggleExpand(card.name) },
-                expanded = expandedCardIds.contains(card.name),
-              ) {
-                viewModel.onItemClicked(it)
-              }
+                model = model,
+                expanded = expandedItemIdList.contains(model.name),
+                onCardArrowClick = { viewModel.onToggleExpand(model.name) },
+                onItemClicked = { viewModel.onItemClicked(it) },
+              )
             }
           }
         }
