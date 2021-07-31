@@ -13,6 +13,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -20,9 +21,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +36,7 @@ import com.github.iurysza.vactrackerapp.ui.components.FakeModels
 import com.github.iurysza.vactrackerapp.ui.components.ToggleButton
 import com.github.iurysza.vactrackerapp.ui.theme.ColorPrimary
 import com.github.iurysza.vactrackerapp.ui.theme.cardExpandedBackgroundColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun HomeScreen(
@@ -42,7 +46,15 @@ fun HomeScreen(
 ) {
   val isSorted = viewModel.sortedByValue.collectAsState().value
   val hasSortToggle = viewModel.isSortEnabled.collectAsState().value
+  val systemUiController = rememberSystemUiController()
 
+  SideEffect {
+    systemUiController.setSystemBarsColor(
+      color = ColorPrimary,
+      darkIcons = false
+    )
+    systemUiController.setNavigationBarColor(Color.Transparent)
+  }
   Scaffold(
     topBar = {
       TopAppBar(
