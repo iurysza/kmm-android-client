@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.github.iurysza.vactrackerapp.FakeModels
 import com.github.iurysza.vactrackerapp.R
 import com.github.iurysza.vactrackerapp.ui.components.ExpandableCard
-import com.github.iurysza.vactrackerapp.ui.components.ModelBottomSheet
+import com.github.iurysza.vactrackerapp.ui.components.MetadataBottomSheet
 import com.github.iurysza.vactrackerapp.ui.components.ToggleButton
 import com.github.iurysza.vactrackerapp.ui.theme.ColorPrimary
 import com.github.iurysza.vactrackerapp.ui.theme.cardExpandedBackgroundColor
@@ -61,7 +61,7 @@ fun HomeScreen(
     systemUiController.setNavigationBarColor(Color.Transparent)
   }
 
-  ModelBottomSheet(bottomSheetValue) {
+  MetadataBottomSheet(bottomSheetValue) {
     Scaffold(
       topBar = {
         AppTopBar(
