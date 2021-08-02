@@ -1,4 +1,4 @@
-package com.github.iurysza.vactrackerapp
+package com.github.iurysza.vaccinationtracker
 
 import org.junit.Test
 
