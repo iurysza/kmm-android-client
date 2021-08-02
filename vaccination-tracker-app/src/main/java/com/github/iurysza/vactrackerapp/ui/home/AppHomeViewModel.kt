@@ -26,13 +26,15 @@ class AppHomeViewModel(
 
   private val fullVaccinationDataCache by lazy {
     viewModelScope.async {
-      state.emit(HomeScreenState.Loading)
+      // state.emit(HomeScreenState.Loading)
       sdk.getFullVaccinationData()
     }
   }
 
   init {
-    viewModelScope.launch { state.emit(HomeScreenState.Loading) }
+    viewModelScope.launch {
+      fullVaccinationDataCache.await()
+    }
     getTotalVaccinationData()
   }
 

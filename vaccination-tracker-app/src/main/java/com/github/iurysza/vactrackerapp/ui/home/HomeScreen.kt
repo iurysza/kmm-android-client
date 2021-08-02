@@ -29,9 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.iurysza.vactrackerapp.FakeModels
 import com.github.iurysza.vactrackerapp.R
 import com.github.iurysza.vactrackerapp.ui.components.ExpandableCard
-import com.github.iurysza.vactrackerapp.ui.components.FakeModels
 import com.github.iurysza.vactrackerapp.ui.components.ModelBottomSheet
 import com.github.iurysza.vactrackerapp.ui.components.ToggleButton
 import com.github.iurysza.vactrackerapp.ui.theme.ColorPrimary
@@ -53,6 +53,8 @@ fun HomeScreen(
   val hasSortToggle = viewModel.isSortEnabled.collectAsState().value
   val systemUiController = rememberSystemUiController()
   val bottomSheetValue = expandedSheet ?: viewModel.bottomSheetState.collectAsState().value
+  val screenState = state ?: viewModel.state.collectAsState().value
+  val expandedItemIdList = selectedId ?: viewModel.expandedCardIdsList.collectAsState().value
 
   SideEffect {
     systemUiController.setSystemBarsColor(color = ColorPrimary, darkIcons = false)
@@ -62,51 +64,23 @@ fun HomeScreen(
   ModelBottomSheet(bottomSheetValue) {
     Scaffold(
       topBar = {
-        TopAppBar(
-          navigationIcon = {},
-          title = {
-            Text(
-              text = "Vacinação COVID 19",
-              textAlign = TextAlign.Center,
-              modifier = Modifier.fillMaxWidth()
-            )
-          },
-          actions = {
-            SortToggle(
-              hasSortToggle = hasSortToggle,
-              isSorted = isSorted,
-              onClick = { viewModel.toggleSort() }
-            )
-          })
-      },
+        AppTopBar(
+          hasSortToggle,
+          isSorted,
+          viewModel
+        )
+      }
     ) {
-      val screenState = state ?: viewModel.state.collectAsState().value
-      val expandedItemIdList = selectedId ?: viewModel.expandedCardIdsList.collectAsState().value
-
       Column {
         HeaderMenu(viewModel)
         when (screenState) {
-          HomeScreenState.Error -> Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-          ) {
-            Text("Algo de errado aconteceu")
-          }
+          HomeScreenState.Error -> ErrorView()
           HomeScreenState.Loading -> FullScreenProgress()
-          is HomeScreenState.Success -> {
-            LazyColumn {
-              itemsIndexed(screenState.modelList) { _, model ->
-                ExpandableCard(
-                  model = model,
-                  expanded = expandedItemIdList.contains(model.name),
-                  onCardArrowClick = { viewModel.onToggleExpand(model.name) },
-                  onItemClicked = {
-                    viewModel.onItemClicked(it)
-                  },
-                )
-              }
-            }
-          }
+          is HomeScreenState.Success -> ExpandableCardList(
+            screenState,
+            expandedItemIdList,
+            viewModel
+          )
         }
       }
     }
@@ -114,12 +88,64 @@ fun HomeScreen(
 }
 
 @Composable
-private fun SortToggle(
+private fun ErrorView() {
+  Box(
+    modifier = Modifier.fillMaxSize(),
+    contentAlignment = Alignment.Center
+  ) {
+    Text("Algo de errado aconteceu")
+  }
+}
+
+@Composable
+private fun ExpandableCardList(
+  screenState: HomeScreenState.Success,
+  expandedItemIdList: List<String>,
+  viewModel: HomeViewModel
+) {
+  LazyColumn {
+    itemsIndexed(screenState.modelList) { _, model ->
+      ExpandableCard(
+        model = model,
+        expanded = expandedItemIdList.contains(model.name),
+        onCardArrowClick = { viewModel.onToggleExpand(model.name) },
+        onItemClicked = {
+          viewModel.onItemClicked(it)
+        },
+      )
+    }
+  }
+}
+
+@Composable
+private fun AppTopBar(
   hasSortToggle: Boolean,
+  isSorted: Boolean,
+  viewModel: HomeViewModel
+) = TopAppBar(
+  navigationIcon = {},
+  title = {
+    Text(
+      text = "Vacinação COVID 19",
+      textAlign = TextAlign.Center,
+      modifier = Modifier.fillMaxWidth()
+    )
+  },
+  actions = {
+    SortToggle(
+      isVisible = hasSortToggle,
+      isSorted = isSorted,
+      onClick = { viewModel.toggleSort() }
+    )
+  })
+
+@Composable
+private fun SortToggle(
+  isVisible: Boolean,
   isSorted: Boolean,
   onClick: () -> Unit
 ) {
-  if (hasSortToggle) {
+  if (isVisible) {
     AppIconButton(
       iconId = if (!isSorted) R.drawable.ic_sort else R.drawable.ic_sort_by_alpha,
       onClick = onClick

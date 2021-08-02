@@ -1,6 +1,6 @@
 package com.github.iurysza.vactrackerapp.ui.home
 
-import com.github.iurysza.vactrackerapp.ui.components.FakeModels
+import com.github.iurysza.vactrackerapp.FakeModels
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

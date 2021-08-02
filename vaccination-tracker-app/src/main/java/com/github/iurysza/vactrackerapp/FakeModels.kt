@@ -1,7 +1,6 @@
-package com.github.iurysza.vactrackerapp.ui.components
+package com.github.iurysza.vactrackerapp
 
 import com.github.iurysza.vactrackerapp.ui.home.DataPoint
-import com.github.iurysza.vactrackerapp.R
 import com.github.iurysza.vactrackerapp.ui.home.HomeScreenState
 import com.github.iurysza.vactrackerapp.ui.home.StateVaccinationCardModel
 import java.util.UUID
@@ -14,7 +13,7 @@ object FakeModels {
     HomeScreenState.Loading -> HomeScreenState.Loading
     else -> HomeScreenState.Success((0..20).map {
       StateVaccinationCardModel(
-        icon = R.drawable.ic_flag_rj,
+        icon = R.drawable.ic_flag_mg,
         name = randomString(10),
         coverage = .2f,
         dataList = listOf(
