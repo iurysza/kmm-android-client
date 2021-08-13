@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.github.iurysza.vactrackerapp.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -57,7 +59,7 @@ fun MetadataBottomSheet(
   ModalBottomSheetLayout(
     sheetElevation = 24.dp,
     modifier = Modifier.padding(horizontal = 4.dp),
-    sheetShape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+    sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
     sheetState = sheetState,
     sheetContent = { MetadataContent(model) },
     content = content,
@@ -135,7 +137,7 @@ fun annotatedLinkString(model: BottomSheetModel) = buildAnnotatedString {
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun ModalSheet() {
   MetadataContent(
     BottomSheetModel(
