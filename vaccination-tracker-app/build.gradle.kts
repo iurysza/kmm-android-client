@@ -12,10 +12,10 @@ android {
 
   defaultConfig {
     applicationId = "com.github.iurysza.vacctrackerapp"
-    minSdk = 29
+    minSdk = 24
     targetSdk = 30
     versionCode = 1
-    versionName = "0.1.0"
+    versionName = "1.0.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables {
@@ -47,7 +47,7 @@ android {
 
 dependencies {
 
-  implementation("com.github.iurysza:vaccination-tracker:1.0.19")
+  implementation("com.github.iurysza:vaccination-tracker:1.0.22")
   implementation("androidx.core:core-ktx:1.6.0")
   implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
   implementation("androidx.activity:activity-compose:${composeVersion}")

@@ -19,23 +19,23 @@ fun List<VaccinationDataResponseItem>.fromAverage14DaysToUiModel(
     coverage = 0f,
     dataList = listOf(
       DataPoint(
-        average14days.firstDose.toLong().formatNumber(),
+        average14days?.firstDose?.toLong().formatNumber(),
         "1ª dose"
       ),
       DataPoint(
-        average14days.secondDose.toLong().formatNumber(),
+        average14days?.secondDose?.toLong().formatNumber(),
         "2ª dose"
       ),
       DataPoint(
-        average14days.singleDose.toLong().formatNumber(),
+        average14days?.singleDose?.toLong().formatNumber(),
         "Dose única"
       ),
       DataPoint(
-        average14days.perMillion.toLong().formatNumber(),
+        average14days?.perMillion?.toLong().formatNumber(),
         "Doses/milhão"
       ),
       DataPoint(
-        average14days.total.toLong().formatNumber(),
+        average14days?.total?.toLong().formatNumber(),
         "Total"
       ),
     )
@@ -47,7 +47,7 @@ fun List<VaccinationDataResponseItem>.fromDailyToUiModel(
   getIconDrawable: (Context, String) -> Int
 ): List<StateVaccinationCardModel> = mapNotNull {
   val dailyVaccinations = it.dailyVaccinations
-  dailyVaccinations.total ?: return@mapNotNull null
+  dailyVaccinations?.total ?: return@mapNotNull null
 
   StateVaccinationCardModel(
     icon = getIconDrawable(context, it.isoCode),
