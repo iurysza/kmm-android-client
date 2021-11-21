@@ -39,8 +39,6 @@ import com.github.iurysza.vactrackerapp.ui.theme.ColorPrimary
 import com.github.iurysza.vactrackerapp.ui.theme.cardExpandedBackgroundColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-@ExperimentalFoundationApi
-@ExperimentalComposeUiApi
 @ExperimentalMaterialApi
 @Composable
 fun HomeScreen(

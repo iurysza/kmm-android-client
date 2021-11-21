@@ -17,9 +17,7 @@ class MainActivity : ComponentActivity() {
   private val sdk = VaccinationTracker(databaseDriverFactory = DatabaseDriverFactory(this))
 
 
-  @ExperimentalFoundationApi
-  @ExperimentalMaterialApi
-  @ExperimentalComposeUiApi
+  @OptIn(ExperimentalMaterialApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {

@@ -35,9 +35,8 @@ import com.github.iurysza.vactrackerapp.ui.theme.ColorHeader
 import com.github.iurysza.vactrackerapp.ui.theme.ColorPrimary
 import kotlinx.coroutines.launch
 
-@ExperimentalFoundationApi
-@Composable
 @ExperimentalMaterialApi
+@Composable
 fun MetadataBottomSheet(
   model: BottomSheetModel?,
   content: @Composable () -> Unit = {},

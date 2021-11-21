@@ -14,8 +14,8 @@ android {
     applicationId = "com.github.iurysza.vacctrackerapp"
     minSdk = 24
     targetSdk = 30
-    versionCode = 1
-    versionName = "1.0.0"
+    versionCode = 2
+    versionName = "1.0.1"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables {
@@ -47,14 +47,14 @@ android {
 
 dependencies {
 
-  implementation("com.github.iurysza:vaccination-tracker:1.0.22")
-  implementation("androidx.core:core-ktx:1.6.0")
-  implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
+  implementation("com.github.iurysza:vaccination-tracker:1.0.23")
+  implementation("androidx.core:core-ktx:1.7.0")
+  implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
   implementation("androidx.activity:activity-compose:${composeVersion}")
   implementation("androidx.compose.ui:ui:${composeVersion}")
   implementation("androidx.compose.material:material:${composeVersion}")
   implementation("androidx.compose.ui:ui-tooling:${composeVersion}")
-  implementation("androidx.activity:activity-compose:1.3.1")
+  implementation("androidx.activity:activity-compose:1.4.0")
   implementation("com.google.android.material:material:1.4.0")
   implementation("com.google.accompanist:accompanist-systemuicontroller:0.15.0")
 
